@@ -4,48 +4,32 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
-.pnpm-debug.log*
-
-# Diagnostic reports
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
 
 # Dependency directories
 node_modules/
 jspm_packages/
 
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# dotenv environment variable files
+# Environment variables
 .env
 .env.test
 .env.production
 .env.local
 
-# Build output
-dist/
-build/
-coverage/
-.out/
+# Optional REPL history
+.node_repl_history
 
-# IDE and OS files
+# Build and Dist output (for your React frontend next phase)
+build/
+dist/
+.next/
+out/
+
+# OS/Mac specific 
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+.AppleDouble
+.LSOverride
+
+# IDEs and Editors
 .vscode/
 .idea/
 *.suo
