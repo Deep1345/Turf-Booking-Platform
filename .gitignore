@@ -9,6 +9,9 @@ yarn-error.log*
 node_modules/
 jspm_packages/
 
+# Lock files (optional — remove if you want to track them)
+package-lock.json
+
 # Environment variables
 .env
 .env.test
@@ -18,16 +21,21 @@ jspm_packages/
 # Optional REPL history
 .node_repl_history
 
-# Build and Dist output (for your React frontend next phase)
+# Build and Dist output
 build/
 dist/
 .next/
 out/
 
-# OS/Mac specific 
+# Vite
+*.local
+.vite/
+
+# OS/Mac specific
 .DS_Store
 .AppleDouble
 .LSOverride
+Thumbs.db
 
 # IDEs and Editors
 .vscode/

@@ -63,8 +63,26 @@ const getTurfBookings = async (req, res) => {
   }
 };
 
+// GET /api/bookings/owner (Get all bookings for turfs owned by logged-in owner)
+const getOwnerBookings = async (req, res) => {
+  try {
+    const ownerTurfs = await Turf.find({ owner: req.user.id }).select('_id');
+    const turfIds = ownerTurfs.map(t => t._id);
+
+    const bookings = await Booking.find({ turf: { $in: turfIds } })
+      .populate('turf', 'name location')
+      .populate('user', 'name email')
+      .sort({ createdAt: -1 });
+
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 module.exports = {
   createBooking,
   getMyBookings,
-  getTurfBookings
+  getTurfBookings,
+  getOwnerBookings
 };

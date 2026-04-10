@@ -23,10 +23,20 @@ const getTurfById = async (req, res) => {
   }
 };
 
-// POST /api/turfs (Create turf - Admin only)
+// GET /api/turfs/owner/my (Get turfs owned by logged-in owner)
+const getOwnerTurfs = async (req, res) => {
+  try {
+    const turfs = await Turf.find({ owner: req.user.id });
+    res.json(turfs);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// POST /api/turfs (Create turf - Owner only)
 const createTurf = async (req, res) => {
   try {
-    const { name, location, pricePerHour, description, images } = req.body;
+    const { name, location, pricePerHour, description, images, availableSlots } = req.body;
     
     const turf = await Turf.create({
       name,
@@ -34,6 +44,7 @@ const createTurf = async (req, res) => {
       pricePerHour,
       description,
       images,
+      availableSlots: availableSlots || [],
       owner: req.user.id
     });
 
@@ -43,7 +54,7 @@ const createTurf = async (req, res) => {
   }
 };
 
-// PUT /api/turfs/:id (Update turf - Admin only)
+// PUT /api/turfs/:id (Update turf - Owner only)
 const updateTurf = async (req, res) => {
   try {
     let turf = await Turf.findById(req.params.id);
@@ -68,7 +79,7 @@ const updateTurf = async (req, res) => {
   }
 };
 
-// DELETE /api/turfs/:id (Delete turf - Admin only)
+// DELETE /api/turfs/:id (Delete turf - Owner only)
 const deleteTurf = async (req, res) => {
   try {
     const turf = await Turf.findById(req.params.id);
@@ -92,6 +103,7 @@ const deleteTurf = async (req, res) => {
 module.exports = {
   getTurfs,
   getTurfById,
+  getOwnerTurfs,
   createTurf,
   updateTurf,
   deleteTurf

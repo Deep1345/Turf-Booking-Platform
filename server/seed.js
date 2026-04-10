@@ -1,0 +1,93 @@
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const connectDB = require('./config/db');
+const Turf = require('./models/Turf');
+const User = require('./models/User');
+const bcrypt = require('bcryptjs');
+
+dotenv.config();
+connectDB();
+
+const seedDB = async () => {
+  try {
+    let owner = await User.findOne({ email: 'owner@turfbook.com' });
+    if (!owner) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash('password123', salt);
+      owner = await User.create({
+        name: 'Default Owner',
+        email: 'owner@turfbook.com',
+        password: hashedPassword,
+        role: 'owner'
+      });
+      console.log('Created default owner: owner@turfbook.com / password123');
+    } else {
+      console.log('Owner already exists: owner@turfbook.com / password123');
+    }
+
+    // Create a default customer too
+    let customer = await User.findOne({ email: 'player@turfbook.com' });
+    if (!customer) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash('password123', salt);
+      customer = await User.create({
+        name: 'Test Player',
+        email: 'player@turfbook.com',
+        password: hashedPassword,
+        role: 'user'
+      });
+      console.log('Created default player: player@turfbook.com / password123');
+    } else {
+      console.log('Player already exists: player@turfbook.com / password123');
+    }
+
+    await Turf.deleteMany({});
+
+    await Turf.create([
+      {
+        name: 'Green Valley Arena',
+        location: 'Downtown City Center',
+        pricePerHour: 800,
+        description: 'A premium 7v7 turf with high-quality 50mm artificial grass, floodlights, and a sitting area.',
+        availableSlots: ['06:00-07:00', '07:00-08:00', '08:00-09:00', '09:00-10:00', '16:00-17:00', '17:00-18:00', '18:00-19:00', '19:00-20:00', '20:00-21:00'],
+        owner: owner._id
+      },
+      {
+        name: 'The Dugout',
+        location: 'Westside Sports Complex',
+        pricePerHour: 1200,
+        description: 'Professional grade 9v9 football turf with shower facilities, energy drinks corner, and ample parking.',
+        availableSlots: ['07:00-08:00', '08:00-09:00', '10:00-11:00', '11:00-12:00', '14:00-15:00', '15:00-16:00', '17:00-18:00', '18:00-19:00', '19:00-20:00', '20:00-21:00', '21:00-22:00'],
+        owner: owner._id
+      },
+      {
+        name: 'Powerplay Box Cricket',
+        location: 'North Avenue Mall Roof',
+        pricePerHour: 600,
+        description: 'Perfect for box cricket. Fully covered from the top, providing excellent shade and wind protection.',
+        availableSlots: ['09:00-10:00', '10:00-11:00', '11:00-12:00', '12:00-13:00', '13:00-14:00', '14:00-15:00', '15:00-16:00', '16:00-17:00'],
+        owner: owner._id
+      },
+      {
+        name: 'Elite Sports Hub',
+        location: 'East End Tech Park',
+        pricePerHour: 1500,
+        description: 'FIFA standard turf suitable for corporate events and professional training sessions.',
+        availableSlots: ['06:00-07:00', '07:00-08:00', '08:00-09:00', '17:00-18:00', '18:00-19:00', '19:00-20:00', '20:00-21:00', '21:00-22:00'],
+        owner: owner._id
+      }
+    ]);
+
+    console.log('\n--- Database Seeded Successfully ---');
+    console.log('\nTest Accounts:');
+    console.log('  Owner:    owner@turfbook.com  / password123');
+    console.log('  Customer: player@turfbook.com / password123');
+    console.log('\n4 Turfs created with available time slots.');
+    process.exit(0);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+};
+
+seedDB();

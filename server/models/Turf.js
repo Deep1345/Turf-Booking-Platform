@@ -20,6 +20,9 @@ const turfSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  availableSlots: [{
+    type: String  // e.g. '06:00-07:00', '07:00-08:00'
+  }],
   images: [{
     type: String
   }],
