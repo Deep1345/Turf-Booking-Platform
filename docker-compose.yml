@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: turf_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - turf_network
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: deep20180/turf-backend:latest
+    container_name: turf_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/turf_booking
+      - PORT=5000
+      - CLIENT_URL=http://localhost
+    env_file:
+      - ./server/.env
+    depends_on:
+      - mongodb
+    networks:
+      - turf_network
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: deep20180/turf-frontend:latest
+    container_name: turf_frontend
+    ports:
+      - "80:80"
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - turf_network
+
+volumes:
+  mongodb_data:
+
+networks:
+  turf_network:
+    driver: bridge
