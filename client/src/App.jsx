@@ -10,6 +10,7 @@ import MyBookings from './pages/MyBookings';
 import Dashboard from './pages/Dashboard';
 import EditTurf from './pages/EditTurf';
 import OwnerBookings from './pages/OwnerBookings';
+import OAuthCallback from './pages/OAuthCallback';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/owner-bookings" element={<OwnerBookings />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/oauth-callback" element={<OAuthCallback />} />
           </Routes>
         </main>
       </div>

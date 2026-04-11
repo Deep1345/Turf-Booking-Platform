@@ -84,4 +84,17 @@ const getMe = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getMe };
+// Google OAuth callback handler
+const googleCallback = (req, res) => {
+  const token = generateToken(req.user);
+  const user = JSON.stringify({
+    id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+    role: req.user.role,
+  });
+  const clientURL = process.env.CLIENT_URL || 'http://localhost:5173';
+  res.redirect(`${clientURL}/oauth-callback?token=${token}&user=${encodeURIComponent(user)}`);
+};
+
+module.exports = { register, login, getMe, googleCallback };

@@ -1,15 +1,32 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db');
+dotenv.config(); // Must be called before passport
 
-dotenv.config();
+const session = require('express-session');
+const connectDB = require('./config/db');
+const passport = require('./config/passport');
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true,
+}));
 app.use(express.json());
+
+// Session (required by Passport)
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'fallback_secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 24 * 60 * 60 * 1000 } // 1 day
+}));
+
+// Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Connect to MongoDB
 connectDB();
