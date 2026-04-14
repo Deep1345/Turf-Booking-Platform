@@ -28,8 +28,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Connect to MongoDB
-connectDB();
+// Connect to MongoDB (skip in test environment)
+if (process.env.NODE_ENV !== 'test') {
+  connectDB();
+}
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
