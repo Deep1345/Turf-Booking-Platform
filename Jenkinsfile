@@ -45,8 +45,8 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 echo 'Building Docker Images...'
-                // Assuming docker and docker-compose are installed on the Jenkins host and the Jenkins user is in the docker group
-                sh 'docker-compose build'
+                // Assuming docker is installed on the Jenkins host and the Jenkins user is in the docker group
+                sh 'docker compose build'
             }
         }
     }
