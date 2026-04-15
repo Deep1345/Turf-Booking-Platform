@@ -49,6 +49,15 @@ pipeline {
                 sh 'docker compose build'
             }
         }
+
+        stage('Deploy with Ansible') {
+            steps {
+                echo 'Deploying with Ansible...'
+                dir('ansible') {
+                    sh 'ansible-playbook playbooks/deploy.yml'
+                }
+            }
+        }
     }
 
     post {
