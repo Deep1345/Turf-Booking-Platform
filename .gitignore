@@ -45,3 +45,14 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Ansible
+*.retry
+ansible/*.cfg.bak
+ansible/vault_password.txt
+
+# Docker
+docker-compose.override.yml
+
+# Test coverage
+coverage/
