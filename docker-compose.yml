@@ -18,7 +18,7 @@ services:
     image: deep20180/turf-backend:latest
     container_name: turf_backend
     ports:
-      - "5000:5000"
+      - "5001:5000"
     environment:
       - MONGO_URI=mongodb://mongodb:27017/turf_booking
       - PORT=5000

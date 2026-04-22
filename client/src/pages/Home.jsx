@@ -10,7 +10,7 @@ const Home = () => {
       <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem auto' }}>
         Find and reserve premium box cricket turfs and sports grounds near you with just a few clicks.
       </p>
-      <Link to="/register">
+      <Link to="/dashboard">
         <button style={{ fontSize: '1.1rem', padding: '1rem 2rem' }}>Get Started</button>
       </Link>
     </div>
