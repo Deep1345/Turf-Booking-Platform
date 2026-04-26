@@ -44,6 +44,10 @@
       changed_when: "'Downloaded' in pull_result.stdout or 'Pull complete' in pull_result.stdout"
 
     # ------- Deploy the Application -------
+    - name: Ensure mongo volume exists (creates basic volume structure if missing)
+      ansible.builtin.command: docker volume create turf_mongodb_data
+      failed_when: false
+      
     - name: Stop existing containers (if running)
       ansible.builtin.command: docker compose -f {{ compose_file }} down
       args:

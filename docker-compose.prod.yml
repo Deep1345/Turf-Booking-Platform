@@ -5,7 +5,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongodb_data:/data/db
+      - turf_mongodb_data:/data/db
     networks:
       - turf_network
 
@@ -37,7 +37,8 @@ services:
       - turf_network
 
 volumes:
-  mongodb_data:
+  turf_mongodb_data:
+    external: true
 
 networks:
   turf_network:
