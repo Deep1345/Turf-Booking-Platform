@@ -12,12 +12,10 @@ const seedDB = async () => {
   try {
     let owner = await User.findOne({ email: 'owner@turfbook.com' });
     if (!owner) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash('password123', salt);
       owner = await User.create({
         name: 'Default Owner',
         email: 'owner@turfbook.com',
-        password: hashedPassword,
+        password: 'password123',
         role: 'owner'
       });
       console.log('Created default owner: owner@turfbook.com / password123');
@@ -28,12 +26,10 @@ const seedDB = async () => {
     // Create a default customer too
     let customer = await User.findOne({ email: 'player@turfbook.com' });
     if (!customer) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash('password123', salt);
       customer = await User.create({
         name: 'Test Player',
         email: 'player@turfbook.com',
-        password: hashedPassword,
+        password: 'password123',
         role: 'user'
       });
       console.log('Created default player: player@turfbook.com / password123');

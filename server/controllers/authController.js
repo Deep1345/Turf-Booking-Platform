@@ -23,7 +23,15 @@ const register = async (req, res) => {
 
     // Create new user (default to 'user' if role isn't 'owner')
     const userRole = role === 'owner' ? 'owner' : 'user';
-    const user = await User.create({ name, email, password, role: userRole });
+    
+    // Mongoose middle-ware 'pre-save' handles password hashing, 
+    // simply pass the raw password to create.
+    const user = await User.create({ 
+      name, 
+      email, 
+      password, 
+      role: userRole 
+    });
 
     const token = generateToken(user);
 
