@@ -26,6 +26,17 @@ const OwnerBookings = () => {
     fetchBookings();
   }, [navigate]);
 
+  const handleCancelBooking = async (bookingId) => {
+    if (!window.confirm('Are you sure you want to cancel this booking?')) return;
+    
+    try {
+      await api.put(`/bookings/${bookingId}/cancel`);
+      setBookings(bookings.map(b => b._id === bookingId ? { ...b, status: 'cancelled' } : b));
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to cancel booking');
+    }
+  };
+
   if (loading) return <div style={{ textAlign: 'center', marginTop: '4rem', color: 'var(--text-muted)' }}>Loading Bookings...</div>;
 
   return (
@@ -51,6 +62,7 @@ const OwnerBookings = () => {
                 <th style={thStyle}>Slot</th>
                 <th style={thStyle}>Amount</th>
                 <th style={thStyle}>Status</th>
+                <th style={thStyle}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -70,6 +82,16 @@ const OwnerBookings = () => {
                     }}>
                       {b.status.toUpperCase()}
                     </span>
+                  </td>
+                  <td style={tdStyle}>
+                    {b.status === 'confirmed' && (
+                      <button 
+                        onClick={() => handleCancelBooking(b._id)}
+                        style={{ background: 'transparent', color: 'var(--danger)', border: '1px solid var(--danger)', padding: '0.25rem 0.6rem', fontSize: '0.8rem', borderRadius: '4px' }}
+                      >
+                        Cancel
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -6,6 +6,8 @@ dotenv.config(); // Must be called before passport
 const session = require('express-session');
 const connectDB = require('./config/db');
 const passport = require('./config/passport');
+// Initialize Redis
+const redisClient = require('./config/redisClient');
 
 const app = express();
 

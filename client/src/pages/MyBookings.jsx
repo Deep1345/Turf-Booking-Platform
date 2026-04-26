@@ -20,6 +20,17 @@ const MyBookings = () => {
     fetchBookings();
   }, []);
 
+  const handleCancelBooking = async (bookingId) => {
+    if (!window.confirm('Are you sure you want to cancel this booking?')) return;
+    
+    try {
+      await api.put(`/bookings/${bookingId}/cancel`);
+      setBookings(bookings.map(b => b._id === bookingId ? { ...b, status: 'cancelled' } : b));
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to cancel booking');
+    }
+  };
+
   if (loading) return <div style={{ textAlign: 'center', marginTop: '4rem', color: 'var(--text-muted)' }}>Loading Bookings...</div>;
 
   return (
@@ -39,9 +50,19 @@ const MyBookings = () => {
               <p style={{ color: 'var(--text-muted)', marginBottom: '0.3rem' }}>📅 {new Date(b.date).toLocaleDateString()}</p>
               <p style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>⏰ {b.timeSlot}</p>
               <p style={{ marginBottom: '1rem', fontWeight: '600', color: 'var(--accent)' }}>💰 ₹{b.totalPrice}</p>
-              <span style={{ display: 'inline-block', padding: '0.3rem 0.8rem', background: b.status === 'confirmed' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)', color: b.status === 'confirmed' ? 'var(--success)' : 'var(--danger)', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '600' }}>
-                {b.status.toUpperCase()}
-              </span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ display: 'inline-block', padding: '0.3rem 0.8rem', background: b.status === 'confirmed' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)', color: b.status === 'confirmed' ? 'var(--success)' : 'var(--danger)', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '600' }}>
+                  {b.status.toUpperCase()}
+                </span>
+                {b.status === 'confirmed' && (
+                  <button 
+                    onClick={() => handleCancelBooking(b._id)}
+                    style={{ background: 'transparent', color: 'var(--danger)', border: '1px solid var(--danger)', padding: '0.4rem 0.8rem', fontSize: '0.85rem', width: 'auto' }}
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>

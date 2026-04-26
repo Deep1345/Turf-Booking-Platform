@@ -9,6 +9,14 @@ services:
     networks:
       - turf_network
 
+  redis:
+    image: redis:alpine
+    container_name: turf_redis
+    ports:
+      - "6380:6379"
+    networks:
+      - turf_network
+
   backend:
     image: prateekkumaryadav/turf-backend:latest
     container_name: turf_backend
@@ -18,6 +26,7 @@ services:
       - MONGO_URI=mongodb://mongodb:27017/turf_booking
       - PORT=5001
       - CLIENT_URL=http://localhost
+      - REDIS_URI=redis://redis:6379
     env_file:
       - .env
     depends_on:
