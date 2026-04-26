@@ -83,7 +83,7 @@
     # ------- Health Check -------
     - name: Verify backend is responding
       ansible.builtin.uri:
-        url: "http://localhost:5000"
+        url: "http://localhost:5001"
         method: GET
         status_code: [200, 404]
         timeout: 10
