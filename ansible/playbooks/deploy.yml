@@ -8,10 +8,10 @@
 
 - name: Deploy Turf Booking Platform
   hosts: webservers
-  become: true
+  become: false
 
   vars:
-    app_dir: /opt/turf-booking
+    app_dir: "~/turf-booking"
     compose_file: docker-compose.prod.yml
 
   tasks:
@@ -20,8 +20,6 @@
       ansible.builtin.file:
         path: "{{ app_dir }}"
         state: directory
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
         mode: "0755"
 
     # ------- Copy Deployment Files -------
@@ -29,16 +27,12 @@
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/../../docker-compose.prod.yml"
         dest: "{{ app_dir }}/docker-compose.prod.yml"
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
         mode: "0644"
 
     - name: Copy environment file to remote host
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/../../server/.env"
         dest: "{{ app_dir }}/.env"
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
         mode: "0600"
 
     # ------- Pull Latest Docker Images -------
