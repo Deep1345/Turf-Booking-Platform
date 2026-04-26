@@ -20,11 +20,11 @@ pipeline {
             steps {
                 echo 'Installing Server Dependencies...'
                 dir('server') {
-                    sh 'npm install'
+                    sh '/Users/prateek/.nvm/versions/node/v25.4.0/bin/npm install'
                 }
                 echo 'Installing Client Dependencies...'
                 dir('client') {
-                    sh 'npm install'
+                    sh '/Users/prateek/.nvm/versions/node/v25.4.0/bin/npm install'
                 }
             }
         }
@@ -33,11 +33,11 @@ pipeline {
             steps {
                 echo 'Running Backend Tests...'
                 dir('server') {
-                    sh 'npm run test'
+                    sh '/Users/prateek/.nvm/versions/node/v25.4.0/bin/npm run test'
                 }
                 echo 'Running Frontend Tests...'
                 dir('client') {
-                    sh 'npm run test'
+                    sh '/Users/prateek/.nvm/versions/node/v25.4.0/bin/npm run test'
                 }
             }
         }
