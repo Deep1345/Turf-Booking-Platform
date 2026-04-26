@@ -10,7 +10,7 @@ services:
       - turf_network
 
   backend:
-    image: deep20180/turf-backend:latest
+    image: prateekkumaryadav/turf-backend:latest
     container_name: turf_backend
     ports:
       - "5000:5000"
@@ -26,7 +26,7 @@ services:
       - turf_network
 
   frontend:
-    image: deep20180/turf-frontend:latest
+    image: prateekkumaryadav/turf-frontend:latest
     container_name: turf_frontend
     ports:
       - "80:80"

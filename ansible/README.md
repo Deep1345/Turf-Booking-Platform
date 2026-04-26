@@ -23,8 +23,8 @@ ansible/
    ```
 2. **SSH access** to the target server (key-based authentication)
 3. **Docker images pushed** to Docker Hub:
-   - `deep20180/turf-backend:latest`
-   - `deep20180/turf-frontend:latest`
+   - `prateekkumaryadav/turf-backend:latest`
+   - `prateekkumaryadav/turf-frontend:latest`
 
 ## Setup
 

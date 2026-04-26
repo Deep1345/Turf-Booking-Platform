@@ -15,7 +15,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    image: deep20180/turf-backend:latest
+    image: prateekkumaryadav/turf-backend:latest
     container_name: turf_backend
     ports:
       - "5001:5000"
@@ -34,7 +34,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    image: deep20180/turf-frontend:latest
+    image: prateekkumaryadav/turf-frontend:latest
     container_name: turf_frontend
     ports:
       - "80:80"

@@ -1,6 +1,16 @@
 pipeline {
     agent any
 
+    environment {
+        NODEJS_HOME = '/Users/prateek/.nvm/versions/node/v25.4.0'
+        PATH = "${NODEJS_HOME}/bin:/usr/local/bin:/opt/homebrew/bin:${env.PATH}"
+        BACKEND_IMAGE_NAME = 'prateekkumaryadav/turf-backend'
+        FRONTEND_IMAGE_NAME = 'prateekkumaryadav/turf-frontend'
+        DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
+        // Make sure to add credentials 'dockerhub-credentials' with ID and Password in your Jenkins Credentials store
+        DOCKER_HUB_CREDS = credentials('dockerhub-credentials')
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -10,10 +20,6 @@ pipeline {
         }
 
         stage('Install Dependencies') {
-            environment {
-                NODEJS_HOME = '/Users/prateek/.nvm/versions/node/v25.4.0'
-                PATH = "${NODEJS_HOME}/bin:${env.PATH}"
-            }
             steps {
                 echo 'Installing Server Dependencies...'
                 dir('server') {
@@ -27,10 +33,6 @@ pipeline {
         }
 
         stage('Run Tests') {
-            environment {
-                NODEJS_HOME = '/Users/prateek/.nvm/versions/node/v25.4.0'
-                PATH = "${NODEJS_HOME}/bin:${env.PATH}"
-            }
             steps {
                 echo 'Running Backend Tests...'
                 dir('server') {
@@ -43,11 +45,37 @@ pipeline {
             }
         }
 
-        stage('Build Docker Images') {
+        stage('Build & Push Multi-Arch Docker Images') {
             steps {
-                echo 'Building Docker Images...'
-                // Assuming docker is installed on the Jenkins host and the Jenkins user is in the docker group
-                sh 'docker compose build'
+                echo 'Building and Pushing Multi-Arch Docker Images...'
+                
+                // Login to Docker Hub
+                sh "echo ${DOCKER_HUB_CREDS_PSW} | docker login -u ${DOCKER_HUB_CREDS_USR} --password-stdin"
+                
+                // Create buildx instance if it doesn't exist
+                sh "docker buildx create --use --name multiarch_builder || true"
+                
+                // Build & Push Backend
+                dir('server') {
+                    sh """
+                    docker buildx build \\
+                      --platform linux/amd64,linux/arm64 \\
+                      -t ${BACKEND_IMAGE_NAME}:${DOCKER_IMAGE_TAG} \\
+                      -t ${BACKEND_IMAGE_NAME}:latest \\
+                      --push .
+                    """
+                }
+                
+                // Build & Push Frontend
+                dir('client') {
+                    sh """
+                    docker buildx build \\
+                      --platform linux/amd64,linux/arm64 \\
+                      -t ${FRONTEND_IMAGE_NAME}:${DOCKER_IMAGE_TAG} \\
+                      -t ${FRONTEND_IMAGE_NAME}:latest \\
+                      --push .
+                    """
+                }
             }
         }
 
@@ -67,20 +95,20 @@ pipeline {
         }
         success {
             emailext (
-                subject: "✅ SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: """<p>The Turf Booking CI build was SUCCESSFUL!</p>
-                <p>Check the console output here: <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></p>""",
+                subject: "BUILD SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Build was successful!\\nProject: ${env.JOB_NAME}\\nBuild Number: ${env.BUILD_NUMBER}\\nBuild URL: ${env.BUILD_URL}",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
-                to: 'your-email@example.com' // TODO: Replace with your actual email address
+                to: 'prateek.student20@gmail.com', // Updated from reference file
+                mimeType: 'text/plain'
             )
         }
         failure {
             emailext (
-                subject: "❌ FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: """<p>The Turf Booking CI build FAILED!</p>
-                <p>Check the console output here to discover the issue: <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></p>""",
+                subject: "BUILD FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Build has failed!\\nProject: ${env.JOB_NAME}\\nBuild Number: ${env.BUILD_NUMBER}\\nBuild URL: ${env.BUILD_URL}\\nCheck the console output",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
-                to: 'your-email@example.com' // TODO: Replace with your actual email address
+                to: 'prateek.student20@gmail.com', // Updated from reference file
+                mimeType: 'text/plain'
             )
         }
     }
