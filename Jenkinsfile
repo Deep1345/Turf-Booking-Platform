@@ -45,17 +45,45 @@ pipeline {
             }
         }
 
-        stage('Build & Push Multi-Arch Docker Images') {
+        stage('Build Multi-Arch Docker Images') {
             steps {
-                echo 'Building and Pushing Multi-Arch Docker Images...'
-                
-                // Login to Docker Hub
-                sh "echo ${DOCKER_HUB_CREDS_PSW} | docker login -u ${DOCKER_HUB_CREDS_USR} --password-stdin"
+                echo 'Building Multi-Arch Docker Images...'
                 
                 // Create buildx instance if it doesn't exist
                 sh "docker buildx create --use --name multiarch_builder || true"
                 
-                // Build & Push Backend
+                // Build Backend
+                dir('server') {
+                    sh """
+                    docker buildx build \\
+                      --platform linux/amd64,linux/arm64 \\
+                      -t ${BACKEND_IMAGE_NAME}:${DOCKER_IMAGE_TAG} \\
+                      -t ${BACKEND_IMAGE_NAME}:latest \\
+                      .
+                    """
+                }
+                
+                // Build Frontend
+                dir('client') {
+                    sh """
+                    docker buildx build \\
+                      --platform linux/amd64,linux/arm64 \\
+                      -t ${FRONTEND_IMAGE_NAME}:${DOCKER_IMAGE_TAG} \\
+                      -t ${FRONTEND_IMAGE_NAME}:latest \\
+                      .
+                    """
+                }
+            }
+        }
+
+        stage('Push Multi-Arch Docker Images') {
+            steps {
+                echo 'Pushing Multi-Arch Docker Images...'
+                
+                // Login to Docker Hub
+                sh "echo ${DOCKER_HUB_CREDS_PSW} | docker login -u ${DOCKER_HUB_CREDS_USR} --password-stdin"
+                
+                // Push Backend
                 dir('server') {
                     sh """
                     docker buildx build \\
@@ -66,7 +94,7 @@ pipeline {
                     """
                 }
                 
-                // Build & Push Frontend
+                // Push Frontend
                 dir('client') {
                     sh """
                     docker buildx build \\
