@@ -11,7 +11,7 @@ pipeline {
 
         stage('Install Dependencies') {
             environment {
-                NODEJS_HOME = tool 'node20'
+                NODEJS_HOME = '/Users/prateek/.nvm/versions/node/v25.4.0'
                 PATH = "${NODEJS_HOME}/bin:${env.PATH}"
             }
             steps {
@@ -28,7 +28,7 @@ pipeline {
 
         stage('Run Tests') {
             environment {
-                NODEJS_HOME = tool 'node20'
+                NODEJS_HOME = '/Users/prateek/.nvm/versions/node/v25.4.0'
                 PATH = "${NODEJS_HOME}/bin:${env.PATH}"
             }
             steps {
