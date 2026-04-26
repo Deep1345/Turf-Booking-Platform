@@ -1,6 +1,7 @@
 pipeline {
     agent any
 
+
     environment {
         // You may need to ensure nodejs, npm, and docker are available in the Jenkins user's PATH
         // If you are using NodeJS plugin in Jenkins, you can uncomment the line below and use your tool name
