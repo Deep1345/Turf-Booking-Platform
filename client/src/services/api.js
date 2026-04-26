@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// Use relative path for all environments.
+// - In dev, Vite proxies /api to http://localhost:5001
+// - In prod, Nginx proxies /api to http://backend:5001
 const api = axios.create({
-  baseURL: 'http://localhost:5001/api',
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
   },

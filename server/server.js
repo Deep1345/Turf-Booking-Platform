@@ -6,6 +6,8 @@ dotenv.config(); // Must be called before passport
 const session = require('express-session');
 const connectDB = require('./config/db');
 const passport = require('./config/passport');
+// Initialize Redis
+const redisClient = require('./config/redisClient');
 
 const app = express();
 
@@ -44,7 +46,7 @@ app.get('/', (req, res) => {
 });
 
 if (require.main === module) {
-  const PORT = process.env.PORT || 5000;
+  const PORT = process.env.PORT || 5001;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });

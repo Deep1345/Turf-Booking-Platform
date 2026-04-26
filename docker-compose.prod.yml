@@ -5,19 +5,28 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongodb_data:/data/db
+      - turf_mongodb_data:/data/db
+    networks:
+      - turf_network
+
+  redis:
+    image: redis:alpine
+    container_name: turf_redis
+    ports:
+      - "6380:6379"
     networks:
       - turf_network
 
   backend:
-    image: deep20180/turf-backend:latest
+    image: prateekkumaryadav/turf-backend:latest
     container_name: turf_backend
     ports:
-      - "5000:5000"
+      - "5001:5001"
     environment:
       - MONGO_URI=mongodb://mongodb:27017/turf_booking
-      - PORT=5000
+      - PORT=5001
       - CLIENT_URL=http://localhost
+      - REDIS_URI=redis://redis:6379
     env_file:
       - .env
     depends_on:
@@ -26,7 +35,7 @@ services:
       - turf_network
 
   frontend:
-    image: deep20180/turf-frontend:latest
+    image: prateekkumaryadav/turf-frontend:latest
     container_name: turf_frontend
     ports:
       - "80:80"
@@ -37,7 +46,8 @@ services:
       - turf_network
 
 volumes:
-  mongodb_data:
+  turf_mongodb_data:
+    external: true
 
 networks:
   turf_network:
