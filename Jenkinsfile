@@ -111,6 +111,8 @@ pipeline {
             steps {
                 echo 'Deploying with Ansible...'
                 dir('ansible') {
+                    // Create a dummy .env file if it doesn't exist, since Jenkins workspace won't have the uncommitted .env file
+                    sh 'touch ../server/.env'
                     sh 'ansible-playbook playbooks/deploy.yml'
                 }
             }
