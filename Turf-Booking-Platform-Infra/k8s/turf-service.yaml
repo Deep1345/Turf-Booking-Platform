@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: turf-service
+  namespace: turf-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: turf-service
+  template:
+    metadata:
+      labels:
+        app: turf-service
+    spec:
+      containers:
+      - name: turf-service
+        image: prateekkumaryadav/turf-turf-service:latest
+        ports:
+        - containerPort: 5002
+        env:
+        - name: PORT
+          value: "5002"
+        - name: MONGO_URI
+          value: "mongodb://mongodb.turf-databases.svc.cluster.local:27017/turf_booking"
+        - name: JWT_SECRET
+          value: "mysecretkey123"
+        - name: EUREKA_HOST
+          value: "eureka-server.turf-infra.svc.cluster.local"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: turf-service
+  namespace: turf-platform
+spec:
+  selector:
+    app: turf-service
+  ports:
+  - port: 5002
+    targetPort: 5002

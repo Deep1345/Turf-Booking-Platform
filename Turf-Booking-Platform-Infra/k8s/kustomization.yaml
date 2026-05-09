@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# NOTE: No global namespace set — each manifest specifies its own namespace
+# turf-platform:  app services (auth, turf, booking, api-gateway, frontend)
+# turf-databases: MongoDB, Redis
+# turf-infra:     Eureka server
+# monitoring:     Prometheus, Grafana
+# logging:        Loki, Promtail
+
+resources:
+  # Namespaces
+  - namespace.yaml
+
+  # Databases (namespace: turf-databases)
+  - mongodb.yaml
+  - redis.yaml
+
+  # Infrastructure (namespace: turf-infra)
+  - eureka-server.yaml
+
+  # Application Services (namespace: turf-platform)
+  - api-gateway.yaml
+  - auth-service.yaml
+  - turf-service.yaml
+  - booking-service.yaml
+  - frontend.yaml
+
+  # Metrics Server (namespace: kube-system)
+  - metrics-server.yaml

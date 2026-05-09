@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-service
+  namespace: turf-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking-service
+  template:
+    metadata:
+      labels:
+        app: booking-service
+    spec:
+      containers:
+      - name: booking-service
+        image: prateekkumaryadav/turf-booking-service:latest
+        ports:
+        - containerPort: 5003
+        env:
+        - name: PORT
+          value: "5003"
+        - name: MONGO_URI
+          value: "mongodb://mongodb.turf-databases.svc.cluster.local:27017/turf_booking"
+        - name: REDIS_URI
+          value: "redis://redis.turf-databases.svc.cluster.local:6379"
+        - name: JWT_SECRET
+          value: "mysecretkey123"
+        - name: EUREKA_HOST
+          value: "eureka-server.turf-infra.svc.cluster.local"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-service
+  namespace: turf-platform
+spec:
+  selector:
+    app: booking-service
+  ports:
+  - port: 5003
+    targetPort: 5003
